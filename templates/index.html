@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaos Tester - API Performance & Reliability</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <header>
+            <h1><span class="highlight">CHAOS</span> TESTER</h1>
+            <p class="subtitle">Netflix-Style SRE API Reliability Simulation</p>
+            <div id="status-badge" class="badge idle">Status: IDLE</div>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Left Column: Controls -->
+            <div class="controls-panel glass-panel">
+                <h2>Load Configuration</h2>
+                <div class="input-group">
+                    <label>Target API URL</label>
+                    <input type="url" id="target_url" value="https://jsonplaceholder.typicode.com/posts" placeholder="https://api.example.com/data">
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Concurrent Users</label>
+                        <input type="number" id="users" value="50" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Spawn Rate (/sec)</label>
+                        <input type="number" id="spawn_rate" value="10" min="1">
+                    </div>
+                </div>
+                
+                <h2 class="mt-4">Chaos Engineering (Live)</h2>
+                
+                <div class="chaos-control">
+                    <div class="control-header">
+                        <label>Latency Spike (ms)</label>
+                        <span id="latency_val" class="mono">0</span>
+                    </div>
+                    <input type="range" id="latency_ms" min="0" max="5000" value="0" step="50">
+                </div>
+                
+                <div class="chaos-control">
+                    <div class="control-header">
+                        <label>Latency Jitter (ms ±)</label>
+                        <span id="jitter_val" class="mono">0</span>
+                    </div>
+                    <input type="range" id="latency_jitter_ms" min="0" max="1000" value="0" step="10">
+                </div>
+
+                <div class="chaos-control">
+                    <div class="control-header">
+                        <label>Packet Loss (%)</label>
+                        <span id="packet_loss_val" class="mono">0</span>
+                    </div>
+                    <input type="range" id="packet_loss_percent" min="0" max="100" value="0" step="1">
+                </div>
+
+                <div class="chaos-control">
+                    <div class="control-header">
+                        <label>Rate Limits (429) (%)</label>
+                        <span id="rate_limit_val" class="mono">0</span>
+                    </div>
+                    <input type="range" id="rate_limit_percent" min="0" max="100" value="0" step="1">
+                </div>
+
+                <div class="chaos-control">
+                    <div class="control-header">
+                        <label>DB Slowdown Multiplier</label>
+                        <span id="slowdown_val" class="mono">1.0x</span>
+                    </div>
+                    <input type="range" id="slowdown_multiplier" min="1" max="10" value="1" step="0.5">
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-start" class="btn btn-primary">START ASSAULT</button>
+                    <button id="btn-stop" class="btn btn-danger" disabled>HALT</button>
+                </div>
+            </div>
+
+            <!-- Right Column: Metrics -->
+            <div class="metrics-panel">
+                <div class="stats-row">
+                    <div class="stat-card glass-panel">
+                        <h3>Total RPS</h3>
+                        <div class="stat-value text-glow-blue" id="stat-rps">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>Failures / Sec</h3>
+                        <div class="stat-value text-glow-red" id="stat-fails">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>Avg Latency</h3>
+                        <div class="stat-value text-glow-orange" id="stat-latency">0 ms</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>Active Users</h3>
+                        <div class="stat-value text-glow-green" id="stat-users">0</div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-panel mt-4">
+                    <h3>Throughput (RPS & Failures)</h3>
+                    <canvas id="rpsChart"></canvas>
+                </div>
+                
+                <div class="chart-container glass-panel mt-4">
+                    <h3>Response Time (Latency)</h3>
+                    <canvas id="latencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
